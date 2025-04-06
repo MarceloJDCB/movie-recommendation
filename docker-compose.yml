@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${API_PORT:-8000}:${API_PORT:-8000}"
+    volumes:
+      - ./app:/app/app  # Volume para o código da aplicação
+      - ./main.py:/app/main.py  # Volume para o arquivo main.py
+      - ./.env:/app/.env  # Volume para o arquivo .env
+    networks:
+      - app-network
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1  # Garante que os logs do Python apareçam imediatamente no console
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

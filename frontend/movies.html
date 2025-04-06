@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BISO Movies - Catálogo</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BISO Movies</h1>
+            <nav>
+                <ul>
+                    <li><a href="movies.html" class="active">Filmes</a></li>
+                    <li><a href="profile.html">Perfil</a></li>
+                    <li><a href="#" id="logout-btn">Sair</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="movies-header">
+                <h2>Catálogo de Filmes</h2>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar filmes...">
+                </div>
+            </div>
+
+            <div class="movies-container" id="movies-list">
+                <!-- Filmes serão inseridos aqui via JavaScript -->
+                <p class="loading">Carregando filmes...</p>
+            </div>
+
+            <div class="pagination">
+                <button id="prev-page" disabled>Anterior</button>
+                <span id="page-info">Página 1</span>
+                <button id="next-page">Próxima</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 BISO Movies - Desenvolvido para fins de teste</p>
+        </footer>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/movies.js"></script>
+</body>
+</html>

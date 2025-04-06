@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BISO Movies - Perfil</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BISO Movies</h1>
+            <nav>
+                <ul>
+                    <li><a href="movies.html">Filmes</a></li>
+                    <li><a href="profile.html" class="active">Perfil</a></li>
+                    <li><a href="#" id="logout-btn">Sair</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="profile-info" id="profile-info">
+                <!-- Informações do perfil serão inseridas aqui via JavaScript -->
+                <p class="loading">Carregando perfil...</p>
+            </div>
+
+            <div class="recommendations">
+                <h2>Recomendações para você</h2>
+                <div class="movies-container" id="recommendations-list">
+                    <!-- Recomendações serão inseridas aqui via JavaScript -->
+                    <p class="loading">Carregando recomendações...</p>
+                </div>
+            </div>
+
+            <div class="popular-movies">
+                <h2>Filmes Populares</h2>
+                <div class="movies-container" id="popular-movies-list">
+                    <!-- Filmes populares serão inseridos aqui via JavaScript -->
+                    <p class="loading">Carregando filmes populares...</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 BISO Movies - Desenvolvido para fins de teste</p>
+        </footer>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>
