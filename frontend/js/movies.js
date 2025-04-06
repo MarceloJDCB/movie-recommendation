@@ -67,7 +67,7 @@ async function loadMovies() {
     try {
         // Carregar filmes da API
         const skip = currentPage * pageSize;
-        const movies = await moviesAPI.listMovies(skip, pageSize);
+        const movies = await moviesAPI.listMovies(skip, pageSize, searchQuery);
         
         // Atualizar informações de paginação
         prevBtn.disabled = currentPage === 0;

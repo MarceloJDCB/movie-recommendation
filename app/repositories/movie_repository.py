@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId
+from typing import List
 from app.models.movie import Movie
 from app.models.review import Review
 from app.repositories.base_repository import BaseRepository
@@ -13,6 +14,24 @@ class MovieRepository(BaseRepository[Movie]):
     def __init__(self, db: AsyncIOMotorDatabase):
         super().__init__(db, "movies", Movie)
         self.reviews_collection = db.reviews
+
+    async def find_all(
+        self, skip: int = 0, limit: int = 100, search: str = None
+    ) -> List[Movie]:
+        """Retorna todos os filmes com paginação e busca opcional pelo título."""
+        # Se tiver um termo de busca, filtra por título
+        if search and search.strip():
+            # Usar expressão regular para busca case-insensitive no título
+            cursor = self.collection.find(
+                {"title": {"$regex": search, "$options": "i"}}
+            )
+        else:
+            cursor = self.collection.find()
+
+        # Aplicar paginação
+        cursor = cursor.skip(skip).limit(limit)
+        documents = await cursor.to_list(length=limit)
+        return [self._process_document(doc) for doc in documents]
 
     async def create_review(self, review: Review) -> Review:
         """Creates a new review in the database."""

@@ -43,11 +43,12 @@ async def get_recommendation_service(
 async def list_movies(
     skip: int = 0,
     limit: int = 100,
+    search: str = Query(None, description="Termo para busca por título de filme"),
     repo: MovieRepository = Depends(get_movie_repository),
 ):
     """Returns a list of movies."""
     try:
-        movies = await repo.find_all(skip=skip, limit=limit)
+        movies = await repo.find_all(skip=skip, limit=limit, search=search)
         return [movie_to_response(movie) for movie in movies]
     except Exception as e:
         raise HTTPException(

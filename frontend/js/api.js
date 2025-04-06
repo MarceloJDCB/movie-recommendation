@@ -111,8 +111,29 @@ const authAPI = {
 
 // Filmes
 const moviesAPI = {
-    // Listar filmes
-    listMovies: (skip = 0, limit = 10) => apiRequest(`/movies/?skip=${skip}&limit=${limit}`),
+    // Listar filmes com suporte a paginação e busca
+    async listMovies(skip = 0, limit = 12, search = '') {
+        const url = new URL(`${API_BASE_URL}/movies`);
+        
+        // Adicionar parâmetros de paginação e busca
+        url.searchParams.append('skip', skip);
+        url.searchParams.append('limit', limit);
+        
+        // Adicionar parâmetro de busca apenas se existir
+        if (search && search.trim() !== '') {
+            url.searchParams.append('search', search.trim());
+        }
+        
+        const response = await fetch(url, {
+            headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+            throw new Error('Erro ao listar filmes');
+        }
+        
+        return await response.json();
+    },
     
     // Obter detalhes de um filme
     getMovie: (movieId) => apiRequest(`/movies/${movieId}`),
