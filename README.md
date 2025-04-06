@@ -240,3 +240,30 @@ curl -X 'POST' \
 ## Documentação da API
 
 A documentação Swagger/OpenAPI está disponível em: http://localhost:8000/docs
+
+## Visualização básica de frontend
+
+O BISO Movies inclui uma interface básica de usuário que pode ser acessada simplesmente abrindo o arquivo index.html em qualquer navegador web moderno:
+
+```bash
+# Abrir no navegador padrão
+# No Windows
+start frontend/index.html
+
+# No macOS
+open frontend/index.html
+
+# No Linux
+xdg-open frontend/index.html
+```
+
+Não é necessário nenhum servidor web para visualizar a interface - basta abrir o arquivo HTML diretamente. O front-end se conectará à API em execução no endereço http://localhost:8000 para buscar e exibir dados.
+
+A interface inclui:
+- Lista de filmes populares
+- Busca de filmes por título, gênero ou ano
+- Visualização detalhada de filmes 
+- Login/registro de usuários
+- Área de perfil do usuário com filmes favoritos e avaliações
+
+Para funcionar corretamente, a API deve estar em execução e acessível antes de abrir a interface.
