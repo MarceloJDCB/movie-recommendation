@@ -112,20 +112,20 @@ async def login(
     """
     # Buscar o usuário no banco
     user = await db.users.find_one({"username": form_data.username})
+    # Definir a exceção uma única vez
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Nome de usuário ou senha incorretos",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    # Verificar se o usuário existe
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Nome de usuário ou senha incorretos",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception
 
     # Verificar a senha
     if not verify_password(form_data.password, user["password_hash"]):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Nome de usuário ou senha incorretos",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception
 
     # Gerar token de acesso com expiração de 7 dias
     access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
