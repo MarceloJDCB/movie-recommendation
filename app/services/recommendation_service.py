@@ -120,7 +120,7 @@ class RecommendationService:
             Lista de filmes similares
         """
         # Buscar o filme de referência
-        movie = await self.db.movies.find_one({"_id": movie_id})
+        movie = await self.db.movies.find_one({"_id": ObjectId(movie_id)})
         if not movie:
             return []
 

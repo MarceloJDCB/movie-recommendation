@@ -62,7 +62,7 @@ class MovieRecommender:
         liked_movies = await MovieRecommender.get_user_preferences(db, user_id)
 
         if not liked_movies:
-            # Se o usuário não avaliou nenhum filme, retornar filmes populares
+            # 2. Se o usuário não avaliou nenhum filme, retornar filmes populares
             all_movies = (
                 await db.movies.find()
                 .limit(max_recommendations)
@@ -74,23 +74,14 @@ class MovieRecommender:
                 recommendations.append(movie)
             return recommendations
 
-        # 2. Obter todos os filmes do banco
-        all_movies = await db.movies.find().to_list(
-            length=1000
-        )  # Limitar para evitar sobrecarga
-
-        # 3. Extrair IDs dos filmes que o usuário já avaliou
+        # 3. Obter todos os filmes do banco
         liked_movie_ids = {movie["id"] for movie in liked_movies}
+        candidate_movies = await db.movies.find(
+            {"_id": {"$nin": [ObjectId(mid) for mid in liked_movie_ids]}},
+            {"_id": 1, "title": 1, "genres": 1, "director": 1, "actors": 1},
+        ).to_list(length=1000)
 
-        # 4. Filtrar filmes que o usuário ainda não avaliou
-        candidate_movies = []
-        for movie in all_movies:
-            movie_id = str(movie["_id"])
-            if movie_id not in liked_movie_ids:
-                movie["id"] = movie_id
-                candidate_movies.append(movie)
-
-        # Se não houver candidatos, retornar lista vazia
+        # 4. Se não houver candidatos, retornar lista vazia
         if not candidate_movies:
             return []
 
@@ -102,28 +93,28 @@ class MovieRecommender:
             MovieRecommender.get_movie_features(movie) for movie in candidate_movies
         ]
 
-        # Todos os recursos juntos para o ajuste do TF-IDF
+        # 6. Todos os recursos juntos para o ajuste do TF-IDF
         all_features = liked_features + candidate_features
 
-        # 6. Calcular TF-IDF
+        # 7. Calcular TF-IDF
         vectorizer = TfidfVectorizer(stop_words="english")
         tfidf_matrix = vectorizer.fit_transform(all_features)
 
-        # 7. Calcular a similaridade média dos filmes candidatos com os filmes curtidos
+        # 8. Calcular a similaridade média dos filmes candidatos com os filmes curtidos
         num_liked = len(liked_features)
         liked_matrix = tfidf_matrix[:num_liked]
         candidate_matrix = tfidf_matrix[num_liked:]
 
-        # Calcular similaridade de cosseno
+        # 9. Calcular similaridade de cosseno
         sim_scores = cosine_similarity(candidate_matrix, liked_matrix)
 
-        # Calcular pontuação média para cada candidato
+        # 10. Calcular pontuação média para cada candidato
         mean_sim_scores = np.mean(sim_scores, axis=1)
 
-        # 8. Obter os índices dos filmes mais similares
+        # 11. Obter os índices dos filmes mais similares
         top_indices = mean_sim_scores.argsort()[-max_recommendations:][::-1]
 
-        # 9. Retornar os filmes recomendados
+        # 12. Retornar os filmes recomendados
         recommended_movies = [candidate_movies[i] for i in top_indices]
 
         return recommended_movies
