@@ -220,33 +220,26 @@ Parâmetros disponíveis para o script load_data.py:
 ## Endpoints disponíveis
 
 ### Autenticação
+- `POST /auth/signup`: Registrar novo usuário
 - `POST /auth/login`: Autenticar um usuário
-- `POST /auth/register`: Registrar um novo usuário
 
 ### Usuários
 - `GET /users/`: Listar todos os usuários
-- `GET /users/{user_id}`: Obter informações de um usuário específico
-- `POST /users/`: Criar um novo usuário
-- `PUT /users/{user_id}`: Atualizar informações de um usuário
-- `DELETE /users/{user_id}`: Excluir um usuário
+- `GET /users/me`: Obter dados do usuário autenticado atual
 
 ### Filmes
 - `GET /movies/`: Listar todos os filmes com paginação e filtros
 - `GET /movies/{movie_id}`: Obter detalhes de um filme específico
-- `POST /movies/`: Adicionar um novo filme
-- `PUT /movies/{movie_id}`: Atualizar informações de um filme
-- `DELETE /movies/{movie_id}`: Excluir um filme
+- `POST /movies/`: Adicionar um novo filme (requer autenticação)
 
 ### Avaliações
-- `GET /movies/reviews`: Listar avaliações de filmes
-- `POST /movies/reviews`: Criar uma nova avaliação para um filme
-- `PUT /movies/reviews/{review_id}`: Atualizar uma avaliação
-- `DELETE /movies/reviews/{review_id}`: Excluir uma avaliação
+- `POST /movies/reviews`: Criar uma nova avaliação para um filme (requer autenticação)
 
 ### Recomendações
-- `GET /movies/{user_id}/recommendations`: Obter recomendações personalizadas para um usuário
+- `GET /movies/{user_id}/recommendations`: Obter recomendações personalizadas para um usuário específico
+- `GET /movies/recommendations/user`: Obter recomendações para o usuário autenticado atual (requer autenticação)
 - `GET /movies/recommendations/similar/{movie_id}`: Obter filmes similares a um filme específico
-- `GET /movies/popular`: Obter lista de filmes populares
+- `GET /movies/recommendations/popular`: Obter lista de filmes populares
 
 ## Sistema de Recomendação
 
