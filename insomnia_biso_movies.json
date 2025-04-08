@@ -1,0 +1,611 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-04-08T12:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2022.7.0",
+  "resources": [
+    {
+      "_id": "req_root",
+      "parentId": "wrk_biso_movies",
+      "modified": 1712598057099,
+      "created": 1712598057099,
+      "url": "{{ _.base_url }}",
+      "name": "API Root",
+      "description": "Endpoint raiz da API",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1712598057099,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "wrk_biso_movies",
+      "parentId": null,
+      "modified": 1712598047619,
+      "created": 1712598047619,
+      "name": "BISO Movies API",
+      "description": "API de recomendação de filmes",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_auth_login",
+      "parentId": "fld_auth",
+      "modified": 1712598130642,
+      "created": 1712598130642,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "Login",
+      "description": "Autenticação de usuário (login)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "params": [
+          {
+            "name": "username",
+            "value": "{{ _.username }}",
+            "id": "pair_1"
+          },
+          {
+            "name": "password",
+            "value": "{{ _.password }}",
+            "id": "pair_2"
+          }
+        ]
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded",
+          "id": "pair_3"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1712598130642,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "preRequestScript": "module.exports = async function (context) {\n  // Define credenciais padrão se não existirem\n  const username = context.request.getEnvironmentVariable('username');\n  if (!username) {\n    context.request.setEnvironmentVariable('username', 'usuario_teste');\n  }\n\n  const password = context.request.getEnvironmentVariable('password');\n  if (!password) {\n    context.request.setEnvironmentVariable('password', 'senha123');\n  }\n  \n  console.log('Tentando login com:', { \n    username: context.request.getEnvironmentVariable('username'),\n    password: '********'\n  });\n};",
+      "testScript": "module.exports = async function (context) {\n  try {\n    const responseBody = context.response.getBody();\n    console.log('Resposta bruta:', responseBody);\n\n    const response = JSON.parse(responseBody);\n\n    if (response.access_token) {\n      console.log('Token extraído com sucesso:', response.access_token);\n\n      // Salvar o token no ambiente global\n      context.request.setEnvironmentVariable('auth_token', response.access_token);\n      console.log('Token salvo no ambiente com sucesso!');\n    } else {\n      console.error('ERRO: Token não encontrado na resposta do servidor.');\n    }\n  } catch (error) {\n    console.error('ERRO ao processar resposta:', error.message);\n    console.log('Status da resposta:', context.response.getStatusCode());\n    console.log('Corpo da resposta:', context.response.getBody());\n  }\n};",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_biso_movies",
+      "modified": 1712598081235,
+      "created": 1712598081235,
+      "name": "Autenticação",
+      "description": "Endpoints de autenticação",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1712598081235,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_auth_signup",
+      "parentId": "fld_auth",
+      "modified": 1712598158865,
+      "created": 1712598158865,
+      "url": "{{ _.base_url }}/auth/signup",
+      "name": "Registro",
+      "description": "Registro de novo usuário",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"username\": \"{{ _.username }}\",\n\t\"email\": \"{{ _.email }}\",\n\t\"password\": \"{{ _.password }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_1"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1712598158865,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "preRequestScript": "module.exports = async function (context) {\n  // Define credenciais padrão se não existirem\n  const username = context.request.getEnvironmentVariable('username');\n  if (!username) {\n    context.request.setEnvironmentVariable('username', 'usuario_teste');\n  }\n\n  const password = context.request.getEnvironmentVariable('password');\n  if (!password) {\n    context.request.setEnvironmentVariable('password', 'senha123');\n  }\n\n  const email = context.request.getEnvironmentVariable('email');\n  if (!email) {\n    const username = context.request.getEnvironmentVariable('username');\n    context.request.setEnvironmentVariable('email', `${username}@example.com`);\n  }\n};",
+      "testScript": "module.exports = async function (context) {\n  // Verifica se o registro foi bem-sucedido\n  const statusCode = context.response.getStatusCode();\n  if (statusCode === 201 || statusCode === 200) {\n    console.log('Usuário registrado com sucesso!');\n    console.log('Faça login para obter o token de acesso');\n  }\n};",
+      "_type": "request"
+    },
+    {
+      "_id": "req_movies_list",
+      "parentId": "fld_movies",
+      "modified": 1712598268055,
+      "created": 1712598268055,
+      "url": "{{ _.base_url }}/movies",
+      "name": "Listar Filmes",
+      "description": "Lista filmes com suporte a paginação e filtros",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "skip",
+          "value": "0",
+          "id": "pair_1",
+          "disabled": false
+        },
+        {
+          "name": "limit",
+          "value": "10",
+          "id": "pair_2",
+          "disabled": false
+        },
+        {
+          "name": "search",
+          "value": "",
+          "id": "pair_3",
+          "disabled": true
+        },
+        {
+          "name": "genre",
+          "value": "",
+          "id": "pair_4",
+          "disabled": true
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1712598268055,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_movies",
+      "parentId": "wrk_biso_movies",
+      "modified": 1712598257178,
+      "created": 1712598257178,
+      "name": "Filmes",
+      "description": "Endpoints de filmes",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1712598257178,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_movies_get",
+      "parentId": "fld_movies",
+      "modified": 1712598289927,
+      "created": 1712598289927,
+      "url": "{{ _.base_url }}/movies/60d21b4967d0d8992e610c86",
+      "name": "Obter Filme",
+      "description": "Obtém detalhes de um filme pelo ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1712598289927,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_movies_create",
+      "parentId": "fld_movies",
+      "modified": 1712598317756,
+      "created": 1712598317756,
+      "url": "{{ _.base_url }}/movies",
+      "name": "Criar Filme",
+      "description": "Adiciona um novo filme ao sistema",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"title\": \"Filme Teste\",\n\t\"genres\": [\"Ação\", \"Aventura\"],\n\t\"director\": \"Diretor Teste\",\n\t\"actors\": [\"Ator 1\", \"Ator 2\"],\n\t\"year\": 2025,\n\t\"plot\": \"Um filme incrível para testes.\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_1"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": -1712598317756,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_movies_popular",
+      "parentId": "fld_recommendations",
+      "modified": 1712598432172,
+      "created": 1712598432172,
+      "url": "{{ _.base_url }}/movies/recommendations/popular",
+      "name": "Filmes Populares",
+      "description": "Retorna os filmes mais populares do sistema",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "limit",
+          "value": "10",
+          "id": "pair_1",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1712598432172,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_recommendations",
+      "parentId": "wrk_biso_movies",
+      "modified": 1712598416292,
+      "created": 1712598416292,
+      "name": "Recomendações",
+      "description": "Endpoints de recomendação de filmes",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1712598416292,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_user_recommendations",
+      "parentId": "fld_recommendations",
+      "modified": 1712598458492,
+      "created": 1712598458492,
+      "url": "{{ _.base_url }}/movies/60d21b4967d0d8992e610c85/recommendations",
+      "name": "Recomendações para Usuário Específico",
+      "description": "Retorna recomendações personalizadas para um usuário específico pelo ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "limit",
+          "value": "10",
+          "id": "pair_1",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": -1712598458492,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_current_user_recommendations",
+      "parentId": "fld_recommendations",
+      "modified": 1712598458493,
+      "created": 1712598458493,
+      "url": "{{ _.base_url }}/movies/recommendations/user",
+      "name": "Recomendações para Usuário Atual",
+      "description": "Retorna recomendações personalizadas para o usuário autenticado",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "limit",
+          "value": "10",
+          "id": "pair_1",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.auth_token }}",
+          "id": "pair_auth"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": -1712598458480,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "preRequestScript": "module.exports = async function (context) {\n  const token = context.request.getEnvironmentVariable('auth_token');\n  if (!token) {\n    console.log('Token de autenticação não encontrado! Execute o login para obter um token.');\n  } else {\n    console.log('Token encontrado:', token);\n  }\n};",
+      "testScript": "module.exports = async function (context) {\n  const statusCode = context.response.getStatusCode();\n  if (statusCode === 401) {\n    console.error('Erro de autenticação! Verifique o token.');\n  } else {\n    console.log('Requisição bem-sucedida:', context.response.getBody());\n  }\n};",
+      "_type": "request"
+    },
+    {
+      "_id": "req_similar_movies",
+      "parentId": "fld_recommendations",
+      "modified": 1712598482396,
+      "created": 1712598482396,
+      "url": "{{ _.base_url }}/movies/recommendations/similar/60d21b4967d0d8992e610c86",
+      "name": "Filmes Similares",
+      "description": "Retorna filmes similares a um filme específico",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "limit",
+          "value": "5",
+          "id": "pair_1",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1712598482396,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_reviews_list",
+      "parentId": "fld_reviews",
+      "modified": 1712598511388,
+      "created": 1712598511388,
+      "url": "{{ _.base_url }}/movies/reviews",
+      "name": "Listar Avaliações",
+      "description": "Lista avaliações de filmes",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "movie_id",
+          "value": "60d21b4967d0d8992e610c86",
+          "id": "pair_1",
+          "disabled": true
+        },
+        {
+          "name": "user_id",
+          "value": "60d21b4967d0d8992e610c85",
+          "id": "pair_2",
+          "disabled": true
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1712598511388,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_reviews",
+      "parentId": "wrk_biso_movies",
+      "modified": 1712598500508,
+      "created": 1712598500508,
+      "name": "Avaliações",
+      "description": "Endpoints para gerenciar avaliações de filmes",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1712598500508,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_reviews_create",
+      "parentId": "fld_reviews",
+      "modified": 1712598538091,
+      "created": 1712598538091,
+      "url": "{{ _.base_url }}/movies/reviews",
+      "name": "Criar Avaliação",
+      "description": "Cria uma nova avaliação para um filme",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"user_id\": \"60d21b4967d0d8992e610c85\",\n\t\"movie_id\": \"60d21b4967d0d8992e610c89\",\n\t\"rating\": 4.5,\n\t\"comment\": \"Um filme fascinante!\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json",
+          "id": "pair_1"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": -1712598538091,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_list",
+      "parentId": "fld_users",
+      "modified": 1712598615787,
+      "created": 1712598615787,
+      "url": "{{ _.base_url }}/users",
+      "name": "Listar Usuários",
+      "description": "Lista todos os usuários do sistema",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": -1712598615787,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_users",
+      "parentId": "wrk_biso_movies",
+      "modified": 1712598605442,
+      "created": 1712598605442,
+      "name": "Usuários",
+      "description": "Endpoints para gerenciar usuários",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1712598605442,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_users_me",
+      "parentId": "fld_users",
+      "modified": 1712598654283,
+      "created": 1712598654283,
+      "url": "{{ _.base_url }}/users/me",
+      "name": "Meu Perfil",
+      "description": "Obtém dados do usuário autenticado",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.auth_token }}"
+      },
+      "metaSortKey": -1712598654283,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_biso_movies_env",
+      "parentId": "env_e82fb9a7e9ccd47fd5cfc36baa1cc0e0d2d70a83",
+      "modified": 1712598757598,
+      "created": 1712598757598,
+      "name": "BISO Movies - Local",
+      "data": {
+        "base_url": "http://localhost:8000",
+        "auth_token": "",
+        "username": "usuario_teste",
+        "password": "senha123",
+        "email": "usuario_teste@example.com"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "auth_token",
+          "username",
+          "password",
+          "email"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1712598757598,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_e82fb9a7e9ccd47fd5cfc36baa1cc0e0d2d70a83",
+      "parentId": null,
+      "modified": 1712598733429,
+      "created": 1712598733429,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": {},
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1712598733429,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_biso_movies_prod",
+      "parentId": "env_e82fb9a7e9ccd47fd5cfc36baa1cc0e0d2d70a83",
+      "modified": 1712598781973,
+      "created": 1712598781973,
+      "name": "BISO Movies - Produção",
+      "data": {
+        "base_url": "https://biso-movies-api.example.com",
+        "auth_token": "",
+        "username": "usuario_teste",
+        "password": "senha123",
+        "email": "usuario_teste@example.com"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "auth_token",
+          "username",
+          "password",
+          "email"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1712598781973,
+      "_type": "environment"
+    }
+  ]
+}
