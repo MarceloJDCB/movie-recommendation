@@ -1,8 +1,6 @@
-from typing import Dict, Any, TypeVar, Type, ClassVar
+from typing import Dict, Any, ClassVar
 from datetime import datetime
 from bson import ObjectId
-
-T = TypeVar("T", bound="BaseModel")
 
 
 class BaseModel:
@@ -34,7 +32,7 @@ class BaseModel:
         return result
 
     @classmethod
-    def from_dict(cls: Type[T], data: Dict[str, Any]) -> T:
+    def from_dict(cls, data: Dict[str, Any]):
         """
         Cria uma instância da classe a partir de um
         dicionário recuperado do MongoDB.
